@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %}
+{% block title %}Payment History{% endblock %}
+{% block page_title %}Payment History{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-clock-history me-2"></i>All Payments ({{ payments|length }})</span>
+  </div>
+  <div class="card-body border-bottom py-2">
+    <form method="GET" class="d-flex gap-2">
+      <input type="text" name="search" class="form-control form-control-sm" placeholder="Search student name or roll..." value="{{ search }}">
+      <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+      {% if search %}<a href="{{ url_for('payment_history') }}" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-lg"></i></a>{% endif %}
+    </form>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Receipt</th><th>Student</th><th>Roll No</th><th>Branch</th>
+            <th>Amount</th><th>Mode</th><th>Date</th><th>Remarks</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in payments %}
+          <tr>
+            <td><code>#{{ p.id }}</code></td>
+            <td class="fw-semibold">{{ p.student_name }}</td>
+            <td class="text-muted small">{{ p.roll_number }}</td>
+            <td>{{ p.branch }}</td>
+            <td class="text-success fw-semibold">₹{{ "{:,.2f}".format(p.amount) }}</td>
+            <td><span class="badge bg-light text-dark">{{ p.payment_mode }}</span></td>
+            <td class="small text-muted">{{ p.paid_at.strftime('%d %b %Y, %I:%M %p') if p.paid_at else '' }}</td>
+            <td class="text-muted small">{{ p.remarks or '—' }}</td>
+            <td>
+              <a href="{{ url_for('download_receipt', payment_id=p.id) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="Download Receipt">
+                <i class="bi bi-download"></i>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="9" class="text-center text-muted py-5">No payments found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

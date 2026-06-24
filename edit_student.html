@@ -1,0 +1,71 @@
+{% extends 'admin/base.html' %}
+{% block title %}Edit Student{% endblock %}
+{% block page_title %}Edit Student{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-8">
+<div class="card">
+  <div class="card-header"><i class="bi bi-pencil me-2"></i>Edit — {{ student.name }}</div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Full Name *</label>
+          <input type="text" name="name" class="form-control" value="{{ student.name }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Roll Number *</label>
+          <input type="text" name="roll_number" class="form-control" value="{{ student.roll_number }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Branch *</label>
+          <select name="branch" class="form-select" required>
+            {% for b in ['CSE','ECE','EEE','MECH','CIVIL','IT','AIDS','CSBS'] %}
+            <option {% if student.branch == b %}selected{% endif %}>{{ b }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Year *</label>
+          <select name="year" class="form-select" required>
+            {% for y in [1,2,3,4] %}
+            <option {% if student.year == y %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Student Email *</label>
+          <input type="email" name="email" class="form-control" value="{{ student.email }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Parent Email *</label>
+          <input type="email" name="parent_email" class="form-control" value="{{ student.parent_email }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Phone</label>
+          <input type="text" name="phone" class="form-control" value="{{ student.phone or '' }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Total Fee (₹) *</label>
+          <input type="number" name="total_fee" class="form-control" step="0.01" value="{{ student.total_fee }}" required>
+        </div>
+        <div class="col-12 mt-2">
+          <div class="alert alert-warning small mb-3 py-2">
+            Editing total fee recalculates balance automatically.<br>
+            Already paid: <strong>₹{{ "{:,.2f}".format(student.paid_amount) }}</strong>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary text-white">
+              <i class="bi bi-check-lg me-1"></i>Save Changes
+            </button>
+            <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

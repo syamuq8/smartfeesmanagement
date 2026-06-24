@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+{% block title %}Import Students{% endblock %}
+{% block page_title %}Import from Excel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-7">
+<div class="card">
+  <div class="card-header"><i class="bi bi-file-earmark-excel me-2"></i>Import Students from Excel</div>
+  <div class="card-body">
+    <div class="alert alert-info small mb-4">
+      <strong>Required columns:</strong>
+      <code>name, roll_number, branch, year, email, parent_email, phone, total_fee</code><br>
+      Optional: <code>paid_amount</code> (defaults to 0 if not provided)
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Select Excel File (.xlsx / .xls)</label>
+        <input type="file" name="excel_file" class="form-control" accept=".xlsx,.xls" required>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success text-white">
+          <i class="bi bi-upload me-2"></i>Import Students
+        </button>
+        <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+    <hr class="my-4">
+    <h6 class="fw-semibold mb-2">Sample Excel format</h6>
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered small">
+        <thead class="table-light">
+          <tr>
+            <th>name</th><th>roll_number</th><th>branch</th><th>year</th>
+            <th>email</th><th>parent_email</th><th>phone</th><th>total_fee</th><th>paid_amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ravi Kumar</td><td>21MH1A0501</td><td>CSE</td><td>2</td>
+            <td>ravi@mail.com</td><td>parent@mail.com</td><td>9876543210</td><td>85000</td><td>40000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

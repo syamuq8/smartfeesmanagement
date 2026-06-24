@@ -1,0 +1,116 @@
+{% extends 'admin/base.html' %}
+{% block title %}Collect Fee{% endblock %}
+{% block page_title %}Collect Fee{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-search me-2"></i>Find Student</div>
+      <div class="card-body">
+        <form method="GET" class="mb-3">
+          <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Name or roll number..." value="{{ search }}">
+            <button class="btn btn-primary text-white" type="submit"><i class="bi bi-search"></i></button>
+          </div>
+        </form>
+        {% if students %}
+          <div class="list-group list-group-flush">
+            {% for s in students %}
+            <button type="button" class="list-group-item list-group-item-action student-item"
+              data-id="{{ s._id_str }}"
+              data-name="{{ s.name }}"
+              data-roll="{{ s.roll_number }}"
+              data-branch="{{ s.branch }}"
+              data-year="{{ s.year }}"
+              data-balance="{{ s.balance }}"
+              data-email="{{ s.parent_email }}">
+              <div class="d-flex justify-content-between">
+                <span class="fw-semibold">{{ s.name }}</span>
+                <span class="badge {% if s.balance == 0 %}bg-success{% elif s.paid_amount == 0 %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                  ₹{{ "{:,.2f}".format(s.balance) }} due
+                </span>
+              </div>
+              <small class="text-muted">{{ s.roll_number }} · {{ s.branch }} · Year {{ s.year }}</small>
+            </button>
+            {% endfor %}
+          </div>
+        {% elif search %}
+          <p class="text-muted text-center py-3">No students with pending fees found for "{{ search }}"</p>
+        {% else %}
+          <p class="text-muted text-center py-3">Search to find a student.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-cash-coin me-2"></i>Payment Details</div>
+      <div class="card-body">
+        <div id="student-info" class="alert alert-info d-none mb-3">
+          <div class="fw-bold" id="info-name"></div>
+          <small class="text-muted" id="info-meta"></small>
+          <div class="mt-1">
+            Balance: <strong class="text-danger" id="info-balance"></strong> &nbsp;|&nbsp;
+            Parent email: <span id="info-email" class="text-muted small"></span>
+          </div>
+        </div>
+
+        <form method="POST">
+          <input type="hidden" name="student_id" id="student_id">
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Amount (₹)</label>
+            <input type="number" name="amount" id="amount" class="form-control form-control-lg"
+              placeholder="0.00" step="0.01" min="1" required>
+            <div class="form-text" id="max-hint"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Payment Mode</label>
+            <select name="payment_mode" class="form-select">
+              <option>Cash</option>
+              <option>Online</option>
+              <option>Cheque</option>
+              <option>DD</option>
+              <option>Card</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold small">Remarks (optional)</label>
+            <input type="text" name="remarks" class="form-control" placeholder="e.g. Semester 1 fees">
+          </div>
+          <button type="submit" class="btn btn-primary text-white w-100 py-2" id="pay-btn" disabled>
+            <i class="bi bi-receipt me-2"></i>Collect &amp; Generate Receipt
+          </button>
+          <p class="text-muted small text-center mt-2 mb-0">
+            <i class="bi bi-envelope me-1"></i>PDF receipt will be auto-emailed to parent.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.student-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.student-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const bal = parseFloat(btn.dataset.balance);
+    document.getElementById('student_id').value = btn.dataset.id;
+    document.getElementById('info-name').textContent = btn.dataset.name;
+    document.getElementById('info-meta').textContent =
+      `${btn.dataset.roll} · ${btn.dataset.branch} · Year ${btn.dataset.year}`;
+    document.getElementById('info-balance').textContent = '₹' + bal.toFixed(2);
+    document.getElementById('info-email').textContent = btn.dataset.email;
+    document.getElementById('student-info').classList.remove('d-none');
+    document.getElementById('max-hint').textContent = `Max payable: ₹${bal.toFixed(2)}`;
+    document.getElementById('amount').max   = bal;
+    document.getElementById('amount').value = bal.toFixed(2);
+    document.getElementById('pay-btn').disabled = false;
+  });
+});
+</script>
+{% endblock %}

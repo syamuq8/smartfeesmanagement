@@ -1,0 +1,67 @@
+{% extends 'admin/base.html' %}
+{% block title %}Add Student{% endblock %}
+{% block page_title %}Add Student{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-8">
+<div class="card">
+  <div class="card-header"><i class="bi bi-person-plus me-2"></i>New Student</div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Full Name *</label>
+          <input type="text" name="name" class="form-control" required placeholder="e.g. Ravi Kumar">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Roll Number *</label>
+          <input type="text" name="roll_number" class="form-control" required placeholder="e.g. 21MH1A0501">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Branch *</label>
+          <select name="branch" class="form-select" required>
+            <option value="">Select branch</option>
+            {% for b in ['CSE','ECE','EEE','MECH','CIVIL','IT','AIDS','CSBS'] %}
+            <option>{{ b }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Year *</label>
+          <select name="year" class="form-select" required>
+            {% for y in [1,2,3,4] %}<option>{{ y }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Student Email *</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Parent Email *</label>
+          <input type="email" name="parent_email" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Phone</label>
+          <input type="text" name="phone" class="form-control" placeholder="+91 XXXXX XXXXX">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Total Fee (₹) *</label>
+          <input type="number" name="total_fee" class="form-control" step="0.01" min="0" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Already Paid (₹)</label>
+          <input type="number" name="paid_amount" class="form-control" step="0.01" min="0" value="0">
+        </div>
+        <div class="col-12 d-flex gap-2 mt-2">
+          <button type="submit" class="btn btn-primary text-white">
+            <i class="bi bi-check-lg me-1"></i>Add Student
+          </button>
+          <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

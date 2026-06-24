@@ -1,4 +1,3 @@
-# smartfeesmanagement
 # Smart College Fee Management System — MongoDB Version
 
 Flask + MongoDB + Bootstrap 5 · PDF Receipts · Email Notifications
